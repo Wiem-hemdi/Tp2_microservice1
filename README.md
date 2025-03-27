@@ -161,18 +161,79 @@ Key : Authorization
 Value : Bearer <votre-token>
 
 Tests avec Postman
-1. Installation de Postman
-Télécharge et installe Postman.
 
-2. Créer une Collection dans Postman
-Dans Postman, crée une collection pour organiser tes tests d'API.
+Ouvrez Postman et créez une nouvelle collection pour votre API.
+Configurez les requêtes pour tester les routes (GET, POST, PUT, DELETE).
+Exécutez les requêtes et vérifiez les réponses pour vous assurer que tout fonctionne correctement.
+Exemple de Réponses API
+GET toutes les personnes
+Requête :
 
-3. Ajouter des Requêtes
-Pour chaque route, ajoute une requête HTTP (GET, POST, PUT, DELETE) avec les bonnes URL et données dans le corps des requêtes.
+GET /personnes
+Réponse :
 
-4. Tester les Routes
-Teste chaque route de l'API en envoyant les requêtes appropriées via Postman et vérifie les réponses.
+{
+  "message": "success",
+  "data": [
+    { "id": 1, "nom": "Bob", "adresse": null },
+    { "id": 2, "nom": "Charlie", "adresse": null },
+    { "id": 3, "nom": "Alice", "adresse": null },
+    { "id": 4, "nom": "Bob", "adresse": null },
+    { "id": 6, "nom": "Charlie", "adresse": null },
+    { "id": 7, "nom": "Bob", "adresse": null },
+    { "id": 8, "nom": "Alice", "adresse": null },
+    { "id": 9, "nom": "Charlie", "adresse": null }
+  ]
+}
+GET une personne par ID
+Requête :
 
-5. Gestion des Erreurs
-Assure-toi de tester les cas où des erreurs peuvent se produire, comme des données manquantes ou incorrectes.
+GET /personnes/3
+Réponse :
+
+{
+  "message": "success",
+  "data": { "id": 3, "nom": "Alice", "adresse": null }
+}
+POST (Créer une nouvelle personne)
+Requête :
+
+POST /personnes
+Content-Type: application/json
+
+{
+  "nom": "David",
+  "adresse": "123 Rue des Fleurs"
+}
+Réponse :
+
+{
+  "message": "success",
+  "data": { "id": 10 }
+}
+PUT (Mettre à jour une personne)
+Requête :
+
+PUT /personnes/2
+Content-Type: application/json
+
+{
+  "nom": "Charles",
+  "adresse": "456 Avenue des Champs"
+}
+Réponse :
+
+{
+  "message": "success"
+}
+DELETE (Supprimer une personne)
+Requête :
+
+DELETE /personnes/4
+Réponse :
+
+{
+  "message": "success"
+}
+Contact
 
