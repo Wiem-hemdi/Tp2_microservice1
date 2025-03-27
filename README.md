@@ -1,169 +1,178 @@
 # API Registre de Personnes avec Keycloak
 
-Cette API RESTful permet de gérer un registre de personnes avec une base de données SQLite. Elle offre des fonctionnalités CRUD (Create, Read, Update, Delete) pour gérer les informations des personnes, ainsi que la protection des routes sensibles via l'intégration de **Keycloak** pour l'authentification et l'autorisation.
-
-## Table des matières
-
-- [Prérequis](#prérequis)
-- [Installation](#installation)
-- [Configuration de Keycloak](#configuration-de-keycloak)
-- [Routes API](#routes-api)
-- [Test avec Postman](#test-avec-postman)
-- [Gestion des erreurs](#gestion-des-erreurs)
+Ce projet est une API Node.js permettant de gérer un registre de personnes avec des informations d'adresse. L'API utilise **SQLite** comme base de données et **Keycloak** pour la gestion de l'authentification et de la sécurité des routes.
 
 ## Prérequis
 
-- **Node.js** (version 14.x ou supérieure)
-- **SQLite** (pour la base de données)
-- **Keycloak** (pour sécuriser les routes)
-- **Postman** (pour tester l'API)
+Avant de commencer, assure-toi d'avoir les éléments suivants installés sur ta machine :
+- [Node.js](https://nodejs.org/) (v14 ou supérieur)
+- [Postman](https://www.postman.com/) pour tester les routes API
+- [Keycloak](https://www.keycloak.org/) pour la gestion de l'authentification
 
 ## Installation
 
-1. Clonez ce repository :
+1. Clone ce repository :
+    ```bash
+    git clone https://github.com/ton-utilisateur/ton-repository.git
+    ```
 
-   ```bash
-   git clone https://github.com/votre-utilisateur/nom-du-repository.git
-   cd nom-du-repository
-Installez les dépendances :
+2. Navigue dans le dossier du projet :
+    ```bash
+    cd ton-repository
+    ```
 
-bash
-Copier
-Modifier
-npm install
-Configuration de Keycloak
-Installez et configurez un serveur Keycloak. Vous pouvez utiliser une instance locale ou un serveur déjà en place.
+3. Installe les dépendances :
+    ```bash
+    npm install
+    ```
 
-Créez un fichier keycloak-config.json à la racine du projet avec la configuration suivante :
+4. Télécharge et configure **Keycloak** avec ton fichier de configuration `keycloak-config.json` (voir [documentation Keycloak](https://www.keycloak.org/docs/latest/server_installation/#_installation)).
 
-json
-Copier
-Modifier
-{
-  "realm": "votre-realm",
-  "auth-server-url": "http://localhost:8080/auth",
-  "resource": "votre-client-id",
-  "credentials": {
-    "secret": "votre-client-secret"
-  }
-}
-Lancez le serveur Keycloak (localement ou sur un serveur distant).
+5. Crée la base de données SQLite avec la commande suivante dans ton terminal :
+    ```bash
+    node database.js
+    ```
 
-Lancez l'API :
+## Configuration de Keycloak
 
-bash
-Copier
-Modifier
-node index.js
+Assure-toi que **Keycloak** est installé et configuré correctement. Le fichier de configuration `keycloak-config.json` doit être présent à la racine du projet et contenir les paramètres de connexion à ton serveur Keycloak.
+
+## Démarrer l'API
+
+Pour démarrer l'API, exécute la commande suivante dans le terminal :
+```bash
+npm start
+
 L'API sera disponible sur http://localhost:3000.
 
 Routes API
+L'API offre plusieurs routes pour gérer les personnes dans la base de données. Elle supporte les méthodes HTTP GET, POST, PUT et DELETE.
+
 1. GET /personnes
-Récupère la liste de toutes les personnes.
+Récupérer la liste de toutes les personnes enregistrées dans la base de données.
 
-Exemple de réponse :
-json
-Copier
-Modifier
-{
-  "message": "success",
-  "data": [
-    { "id": 1, "nom": "Bob", "adresse": "123 Rue A" },
-    { "id": 2, "nom": "Alice", "adresse": "456 Rue B" }
-  ]
-}
+URL : http://localhost:3000/personnes
+
+Méthode : GET
+
+Réponse :
+
+Code : 200 OK
+
+Body : Liste des personnes sous format JSON.
+
 2. GET /personnes/:id
-Récupère une personne par son ID.
+Récupérer les détails d'une personne spécifique par son ID.
 
-Exemple de réponse :
-json
-Copier
-Modifier
-{
-  "message": "success",
-  "data": { "id": 1, "nom": "Bob", "adresse": "123 Rue A" }
-}
+URL : http://localhost:3000/personnes/{id}
+
+Méthode : GET
+
+Réponse :
+
+Code : 200 OK
+
+Body : Détails de la personne sous format JSON.
+
 3. POST /personnes
-Crée une nouvelle personne avec nom et adresse.
+Ajouter une nouvelle personne avec son nom et son adresse.
 
-Exemple de requête :
+URL : http://localhost:3000/personnes
+
+Méthode : POST
+
+Body (Exemple) :
+
 json
 Copier
 Modifier
 {
-  "nom": "Charlie",
-  "adresse": "789 Rue C"
+  "nom": "John",
+  "adresse": "123 Rue de Paris"
 }
-Exemple de réponse :
-json
-Copier
-Modifier
-{
-  "message": "success",
-  "data": { "id": 3, "nom": "Charlie", "adresse": "789 Rue C" }
-}
+Réponse :
+
+Code : 201 Created
+
+Body : La personne ajoutée, avec son ID.
+
 4. PUT /personnes/:id
-Met à jour une personne par son ID.
+Mettre à jour les informations d'une personne (nom, adresse) par son ID.
 
-Exemple de requête :
+URL : http://localhost:3000/personnes/{id}
+
+Méthode : PUT
+
+Body (Exemple) :
+
 json
 Copier
 Modifier
 {
-  "nom": "Bob",
-  "adresse": "123 Rue D"
+  "nom": "John Updated",
+  "adresse": "456 Rue de Lyon"
 }
-Exemple de réponse :
-json
-Copier
-Modifier
-{
-  "message": "success",
-  "data": { "id": 1, "nom": "Bob", "adresse": "123 Rue D" }
-}
+Réponse :
+
+Code : 200 OK
+
+Body : La personne mise à jour.
+
 5. DELETE /personnes/:id
-Supprime une personne par son ID.
+Supprimer une personne de la base de données par son ID.
 
-Exemple de réponse :
-json
-Copier
-Modifier
-{
-  "message": "success"
-}
+URL : http://localhost:3000/personnes/{id}
+
+Méthode : DELETE
+
+Réponse :
+
+Code : 200 OK
+
+Body : Message de succès.
+
 6. GET /secure
-Route protégée par Keycloak. Elle nécessite une authentification via un token JWT.
+Route protégée par Keycloak. Seul un utilisateur authentifié peut y accéder.
 
-Exemple de réponse (si authentifié) :
-json
-Copier
-Modifier
-{
-  "message": "Vous êtes authentifié avec Keycloak !"
-}
-Test avec Postman
-Téléchargez et installez Postman.
+URL : http://localhost:3000/secure
 
-Créez une collection dans Postman pour tester les routes de l'API.
+Méthode : GET
 
-Pour tester la route GET /secure, assurez-vous d'envoyer un token valide dans les en-têtes de la requête. Exemple d'en-tête :
+Authentification : Token JWT valide dans l'en-tête Authorization.
 
-json
-Copier
-Modifier
-{
-  "Authorization": "Bearer <votre-token>"
-}
-Gestion des erreurs
-L'API gère les erreurs en renvoyant les codes HTTP appropriés, accompagnés de messages d'erreur :
+Réponse :
 
-400 Bad Request : Lorsque les données envoyées sont invalides.
+Code : 200 OK
 
-404 Not Found : Lorsque la ressource demandée n'existe pas.
+Body : Message de succès : "Vous êtes authentifié !"
 
-500 Internal Server Error : En cas d'erreur serveur.
+Authentification avec Keycloak
+Pour accéder aux routes protégées par Keycloak, tu dois obtenir un token JWT en te connectant à Keycloak. Ajoute le token JWT dans l'en-tête Authorization de tes requêtes.
 
-Conclusion
-Ce projet implémente une API REST sécurisée pour gérer un registre de personnes, avec un système d'authentification basé sur Keycloak. Il vous permet de tester les fonctionnalités CRUD avec Postman tout en sécurisant les données sensibles.
+Exemple de requête avec token JWT :
+URL : http://localhost:3000/secure
 
-wiem hemdi
+Méthode : GET
+
+En-tête :
+
+Key : Authorization
+
+Value : Bearer <votre-token>
+
+Tests avec Postman
+1. Installation de Postman
+Télécharge et installe Postman.
+
+2. Créer une Collection dans Postman
+Dans Postman, crée une collection pour organiser tes tests d'API.
+
+3. Ajouter des Requêtes
+Pour chaque route, ajoute une requête HTTP (GET, POST, PUT, DELETE) avec les bonnes URL et données dans le corps des requêtes.
+
+4. Tester les Routes
+Teste chaque route de l'API en envoyant les requêtes appropriées via Postman et vérifie les réponses.
+
+5. Gestion des Erreurs
+Assure-toi de tester les cas où des erreurs peuvent se produire, comme des données manquantes ou incorrectes.
+
