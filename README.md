@@ -1,242 +1,194 @@
-# API Registre de Personnes avec Keycloak
-
-Ce projet est une API Node.js permettant de gérer un registre de personnes avec des informations d'adresse. L'API utilise **SQLite** comme base de données et **Keycloak** pour la gestion de l'authentification et de la sécurité des routes.
-
-## Prérequis
-
-Avant de commencer, assure-toi d'avoir les éléments suivants installés sur ta machine :
-- [Node.js](https://nodejs.org/) (v14 ou supérieur)
-- [Postman](https://www.postman.com/) pour tester les routes API
-- [Keycloak](https://www.keycloak.org/) pour la gestion de l'authentification
-
-## Installation
-
-1. Clone ce repository :
-    ```bash
-    git clone https://github.com/ton-utilisateur/ton-repository.git
-    ```
-
-2. Navigue dans le dossier du projet :
-    ```bash
-    cd ton-repository
-    ```
-
-3. Installe les dépendances :
-    ```bash
-    npm install
-    ```
-
-4. Télécharge et configure **Keycloak** avec ton fichier de configuration `keycloak-config.json` (voir [documentation Keycloak](https://www.keycloak.org/docs/latest/server_installation/#_installation)).
-
-5. Crée la base de données SQLite avec la commande suivante dans ton terminal :
-    ```bash
-    node database.js
-    ```
-
-## Configuration de Keycloak
-
-Assure-toi que **Keycloak** est installé et configuré correctement. Le fichier de configuration `keycloak-config.json` doit être présent à la racine du projet et contenir les paramètres de connexion à ton serveur Keycloak.
-
-## Démarrer l'API
-
-Pour démarrer l'API, exécute la commande suivante dans le terminal :
-```bash
-npm start
-
-L'API sera disponible sur http://localhost:3000.
-
-Routes API
-L'API offre plusieurs routes pour gérer les personnes dans la base de données. Elle supporte les méthodes HTTP GET, POST, PUT et DELETE.
-
-1. GET /personnes
-Récupérer la liste de toutes les personnes enregistrées dans la base de données.
-
-URL : http://localhost:3000/personnes
-
-Méthode : GET
-
-Réponse :
-
-Code : 200 OK
-
-Body : Liste des personnes sous format JSON.
-
-2. GET /personnes/:id
-Récupérer les détails d'une personne spécifique par son ID.
-
-URL : http://localhost:3000/personnes/{id}
-
-Méthode : GET
-
-Réponse :
-
-Code : 200 OK
-
-Body : Détails de la personne sous format JSON.
-
-3. POST /personnes
-Ajouter une nouvelle personne avec son nom et son adresse.
-
-URL : http://localhost:3000/personnes
-
-Méthode : POST
-
-Body (Exemple) :
-
-json
-Copier
-Modifier
-{
-  "nom": "John",
-  "adresse": "123 Rue de Paris"
-}
-Réponse :
-
-Code : 201 Created
-
-Body : La personne ajoutée, avec son ID.
-
-4. PUT /personnes/:id
-Mettre à jour les informations d'une personne (nom, adresse) par son ID.
-
-URL : http://localhost:3000/personnes/{id}
-
-Méthode : PUT
-
-Body (Exemple) :
-
-json
-Copier
-Modifier
-{
-  "nom": "John Updated",
-  "adresse": "456 Rue de Lyon"
-}
-Réponse :
-
-Code : 200 OK
-
-Body : La personne mise à jour.
-
-5. DELETE /personnes/:id
-Supprimer une personne de la base de données par son ID.
-
-URL : http://localhost:3000/personnes/{id}
-
-Méthode : DELETE
-
-Réponse :
-
-Code : 200 OK
-
-Body : Message de succès.
-
-6. GET /secure
-Route protégée par Keycloak. Seul un utilisateur authentifié peut y accéder.
-
-URL : http://localhost:3000/secure
-
-Méthode : GET
-
-Authentification : Token JWT valide dans l'en-tête Authorization.
-
-Réponse :
-
-Code : 200 OK
-
-Body : Message de succès : "Vous êtes authentifié !"
-
-Authentification avec Keycloak
-Pour accéder aux routes protégées par Keycloak, tu dois obtenir un token JWT en te connectant à Keycloak. Ajoute le token JWT dans l'en-tête Authorization de tes requêtes.
-
-Exemple de requête avec token JWT :
-URL : http://localhost:3000/secure
-
-Méthode : GET
-
-En-tête :
-
-Key : Authorization
-
-Value : Bearer <votre-token>
-
-Tests avec Postman
-
-Ouvrez Postman et créez une nouvelle collection pour votre API.
-Configurez les requêtes pour tester les routes (GET, POST, PUT, DELETE).
-Exécutez les requêtes et vérifiez les réponses pour vous assurer que tout fonctionne correctement.
-Exemple de Réponses API
-GET toutes les personnes
-Requête :
-
-GET /personnes
-Réponse :
-
-{
-  "message": "success",
-  "data": [
-    { "id": 1, "nom": "Bob", "adresse": null },
-    { "id": 2, "nom": "Charlie", "adresse": null },
-    { "id": 3, "nom": "Alice", "adresse": null },
-    { "id": 4, "nom": "Bob", "adresse": null },
-    { "id": 6, "nom": "Charlie", "adresse": null },
-    { "id": 7, "nom": "Bob", "adresse": null },
-    { "id": 8, "nom": "Alice", "adresse": null },
-    { "id": 9, "nom": "Charlie", "adresse": null }
-  ]
-}
-GET une personne par ID
-Requête :
-
-GET /personnes/3
-Réponse :
-
-{
-  "message": "success",
-  "data": { "id": 3, "nom": "Alice", "adresse": null }
-}
-POST (Créer une nouvelle personne)
-Requête :
-
-POST /personnes
-Content-Type: application/json
-
-{
-  "nom": "David",
-  "adresse": "123 Rue des Fleurs"
-}
-Réponse :
-
-{
-  "message": "success",
-  "data": { "id": 10 }
-}
-PUT (Mettre à jour une personne)
-Requête :
-
-PUT /personnes/2
-Content-Type: application/json
-
-{
-  "nom": "Charles",
-  "adresse": "456 Avenue des Champs"
-}
-Réponse :
-
-{
-  "message": "success"
-}
-DELETE (Supprimer une personne)
-Requête :
-
-DELETE /personnes/4
-Réponse :
-
-{
-  "message": "success"
-}
-
-
-
-wiem hemdi
+# API RESTful avec Express.js et SQLite3
+
+## Objectif(s)
+- Création d’une API REST avec Express.js
+- Utilisation des bonnes pratiques pour les API RESTful
+
+## Outils Utilisés
+- Node.js
+- Express.js
+- SQLite3
+- Postman (pour les tests)
+
+---
+
+## 1. Initialisation du Projet
+1. **Créer un dossier de projet** et naviguer dedans :
+   ```sh
+   mkdir api-express-sqlite && cd api-express-sqlite
+   ```
+2. **Initialiser un projet Node.js** :
+   ```sh
+   npm init -y
+   ```
+3. **Installer les dépendances** :
+   ```sh
+   npm install express sqlite3
+   ```
+
+---
+
+## 2. Configuration de SQLite3
+1. **Créer un fichier** `database.js`.
+2. **Ajouter la configuration SQLite3** :
+   ```js
+   const sqlite3 = require('sqlite3').verbose();
+   
+   const db = new sqlite3.Database('./maBaseDeDonnees.sqlite', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+       if (err) {
+           console.error(err.message);
+       } else {
+           console.log('Connecté à la base de données SQLite.');
+           db.run(`CREATE TABLE IF NOT EXISTS personnes (
+               id INTEGER PRIMARY KEY AUTOINCREMENT,
+               nom TEXT NOT NULL,
+               adresse TEXT
+           )`, (err) => {
+               if (err) {
+                   console.error(err.message);
+               }
+           });
+       }
+   });
+   
+   module.exports = db;
+   ```
+
+---
+
+## 3. Mise en Place de l'API
+1. **Créer un fichier** `index.js`.
+2. **Ajouter la configuration Express.js** :
+   ```js
+   const express = require('express');
+   const db = require('./database');
+   const app = express();
+   app.use(express.json());
+   
+   const PORT = 3000;
+   
+   app.get('/', (req, res) => {
+       res.json("Registre de personnes! Choisissez le bon routage!");
+   });
+
+   // Récupérer toutes les personnes
+   app.get('/personnes', (req, res) => {
+       db.all("SELECT * FROM personnes", [], (err, rows) => {
+           if (err) {
+               res.status(400).json({ "error": err.message });
+               return;
+           }
+           res.json({ "message": "success", "data": rows });
+       });
+   });
+
+   // Récupérer une personne par ID
+   app.get('/personnes/:id', (req, res) => {
+       const id = req.params.id;
+       db.get("SELECT * FROM personnes WHERE id = ?", [id], (err, row) => {
+           if (err) {
+               res.status(400).json({ "error": err.message });
+               return;
+           }
+           res.json({ "message": "success", "data": row });
+       });
+   });
+
+   // Créer une nouvelle personne
+   app.post('/personnes', (req, res) => {
+       const { nom, adresse } = req.body;
+       if (!nom) {
+           res.status(400).json({ "error": "Le champ 'nom' est obligatoire." });
+           return;
+       }
+       db.run(`INSERT INTO personnes (nom, adresse) VALUES (?, ?)`, [nom, adresse], function(err) {
+           if (err) {
+               res.status(400).json({ "error": err.message });
+               return;
+           }
+           res.json({ "message": "success", "data": { id: this.lastID } });
+       });
+   });
+
+   // Mettre à jour une personne
+   app.put('/personnes/:id', (req, res) => {
+       const id = req.params.id;
+       const { nom, adresse } = req.body;
+       db.run(`UPDATE personnes SET nom = ?, adresse = ? WHERE id = ?`, [nom, adresse, id], function(err) {
+           if (err) {
+               res.status(400).json({ "error": err.message });
+               return;
+           }
+           res.json({ "message": "success" });
+       });
+   });
+
+   // Supprimer une personne
+   app.delete('/personnes/:id', (req, res) => {
+       const id = req.params.id;
+       db.run(`DELETE FROM personnes WHERE id = ?`, id, function(err) {
+           if (err) {
+               res.status(400).json({ "error": err.message });
+               return;
+           }
+           res.json({ "message": "success" });
+       });
+   });
+
+   app.listen(PORT, () => {
+       console.log(`Server running on port ${PORT}`);
+   });
+   ```
+
+---
+
+## 4. Test avec Postman
+### Installation et Configuration
+1. **Téléchargez et installez** Postman depuis [Postman](https://www.postman.com/downloads/).
+2. **Créez une collection** pour organiser les requêtes de l'API.
+
+### Test des Routes
+#### **1️⃣ Récupérer toutes les personnes (GET)**
+- **URL :** `http://localhost:3000/personnes`
+
+#### **2️⃣ Récupérer une personne par ID (GET)**
+- **URL :** `http://localhost:3000/personnes/1`
+
+#### **3️⃣ Ajouter une personne (POST)**
+- **URL :** `http://localhost:3000/personnes`
+- **Headers :** `Content-Type: application/json`
+- **Body :**
+   ```json
+   {
+       "nom": "David",
+       "adresse": "10 Rue des Lilas"
+   }
+   ```
+
+#### **4️⃣ Mettre à jour une personne (PUT)**
+- **URL :** `http://localhost:3000/personnes/1`
+- **Body :**
+   ```json
+   {
+       "nom": "David Martin",
+       "adresse": "20 Rue du Centre"
+   }
+   ```
+
+#### **5️⃣ Supprimer une personne (DELETE)**
+- **URL :** `http://localhost:3000/personnes/1`
+
+### Validation des Tests
+✅ **Vérifiez les données mises à jour** avec `GET` après un `POST` ou `PUT`.
+✅ **Testez les erreurs** en envoyant des requêtes incorrectes.
+
+---
+
+## 5. Exécution du Serveur
+Pour exécuter le projet, utilisez :
+```sh
+node index.js
+```
+
+Votre API est maintenant fonctionnelle et testable avec Postman ! 🚀
 
